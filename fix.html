@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>إصلاح الروابط</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        button { margin: 10px; padding: 10px; }
+        #result { margin-top: 20px; padding: 15px; }
+    </style>
+</head>
+<body>
+    <h1>🛠️ إصلاح روابط الموقع</h1>
+    
+    <button onclick="fixLinks()">إصلاح جميع الروابط</button>
+    <button onclick="testSite()">اختبار الموقع</button>
+    
+    <div id="result"></div>
+    
+    <script>
+        function fixLinks() {
+            const files = ['index.html', 'news.html', 'article.html'];
+            let fixed = 0;
+            
+            files.forEach(filename => {
+                fetch(filename)
+                    .then(response => response.text())
+                    .then(text => {
+                        // إصلاح الروابط
+                        let fixedText = text
+                            .replace(/href="([^"http].*?\.html)"/g, 'href="./$1"')
+                            .replace(/src="([^"http].*?\.(js|css|png|jpg|jpeg|gif))"/g, 'src="./$1"')
+                            .replace(/href="([^"http].*?\.css)"/g, 'href="./$1"');
+                        
+                        // حفظ الملف
+                        const blob = new Blob([fixedText], { type: 'text/html' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
+                        a.click();
+                        
+                        fixed++;
+                        document.getElementById('result').innerHTML += 
+                            `<p>✅ تم إصلاح ${filename}</p>`;
+                    })
+                    .catch(() => {
+                        document.getElementById('result').innerHTML += 
+                            `<p>❌ خطأ في ${filename}</p>`;
+                    });
+            });
+        }
+        
+        function testSite() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>🔍 جاري اختبار الموقع...</p>';
+            
+            // اختبار الملفات الأساسية
+            const tests = [
+                { name: 'الصفحة الرئيسية', file: 'index.html' },
+                { name: 'أرشيف الأخبار', file: 'news.html' },
+                { name: 'المقال المفصل', file: 'article.html' },
+                { name: 'التنسيقات', file: 'style.css' },
+                { name: 'الجافاسكريبت', file: 'script.js' }
+            ];
+            
+            let passed = 0;
+            
+            tests.forEach(test => {
+                fetch(test.file)
+                    .then(response => {
+                        if (response.ok) {
+                            resultDiv.innerHTML += `<p>✅ ${test.name}: موجود</p>`;
+                            passed++;
+                        } else {
+                            resultDiv.innerHTML += `<p>❌ ${test.name}: مفقود</p>`;
+                        }
+                        
+                        if (passed === tests.length) {
+                            resultDiv.innerHTML += `<p style="color: green; font-weight: bold;">🎉 كل الملفات موجودة!</p>`;
+                        }
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

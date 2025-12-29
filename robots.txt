@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://Чгу уцокп.com/sitemap.xml
