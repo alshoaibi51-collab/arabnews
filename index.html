@@ -396,4 +396,25 @@
 
 <!-- Favicon -->
 <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📰</text></svg>">
+
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📰</text></svg>">
+<script>
+// إعادة توجيه تلقائي للروابط
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname;
+    
+    // إذا كنا في الصفحة الرئيسية
+    if (currentPath === '/arabnews/' || currentPath === '/arabnews/index.html') {
+        // إصلاح جميع الروابط
+        document.querySelectorAll('a[href]').forEach(link => {
+            let href = link.getAttribute('href');
+            
+            if (href && href.includes('.html') && !href.startsWith('http')) {
+                if (!href.startsWith('/arabnews/')) {
+                    link.setAttribute('href', '/arabnews/' + href);
+                }
+            }
+        });
+    }
+});
+</script>
